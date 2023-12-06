@@ -1,0 +1,26 @@
+Inventory Management System
+
+command flags:
+  - a: add item
+  - r: subtract one from item inventory
+  - d: remove all item data
+  - s: search item by sku(stock keeping unit)
+  - n: search item by name
+  - b: search all data from a brand
+  - e: edit item data
+
+item table columns:
+  - name
+  - brand
+  - sku
+  - stock
+  - location
+  - product type
+
+TODO:
+connect to postgress database
+check/create tables for stock
+create functions for flags
+create a function to run flag functions based on the flag input
+
+
