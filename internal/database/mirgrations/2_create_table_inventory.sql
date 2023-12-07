@@ -4,9 +4,8 @@ CREATE TABLE IF NOT EXISTS item (
   sku TEXT UNIQUE PRIMARY KEY,
   name VARCHAR(255),
   brand VARCHAR(255),
-  category VARCHAR(100),
-  location VARCHAR(50),
-  stock INT);
+  category VARCHAR(50) REFERENCES category(name),
+  location VARCHAR(50));
 
 -- migrate Down
 DROP TABLE item;
