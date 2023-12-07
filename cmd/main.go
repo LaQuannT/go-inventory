@@ -30,7 +30,7 @@ func main() {
 		os.Getenv("PG_SERVER"),
 		os.Getenv("PG_PORT"),
 		os.Getenv("PG_DATABASE"),
-		os.Getenv("SSLMODE"),
+		os.Getenv("PG_SSLMODE"),
 	}
 
 	dbConnStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", env.Username, env.Password, env.Server, env.Port, env.Database, env.Ssl)
