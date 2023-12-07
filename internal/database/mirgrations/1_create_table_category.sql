@@ -1,8 +1,8 @@
 -- +migrate Up
 CREATE TABLE IF NOT EXISTS category (
     id SERIAL,
-    name VARCHAR(50) PRIMARY KEY
+    name VARCHAR(50) UNIQUE PRIMARY KEY
   );
 
-  -- +migrate Down
+-- +migrate Down
   DROP TABLE category;

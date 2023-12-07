@@ -28,7 +28,7 @@ func Connect(path string) (*sql.DB, error) {
 
 func migrateUp(db *sql.DB) error {
 	migrations := &migrate.FileMigrationSource{
-		Dir: "./mirgrations/",
+		Dir: "internal/database/mirgrations",
 	}
 	_, err := migrate.Exec(db, "postgres", migrations, migrate.Up)
 	if err != nil {

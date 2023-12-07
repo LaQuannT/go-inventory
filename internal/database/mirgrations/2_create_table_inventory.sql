@@ -7,5 +7,5 @@ CREATE TABLE IF NOT EXISTS item (
   category VARCHAR(50) REFERENCES category(name),
   location VARCHAR(50));
 
--- migrate Down
+-- +migrate Down
 DROP TABLE item;
