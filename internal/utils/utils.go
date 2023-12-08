@@ -9,20 +9,13 @@ import (
 )
 
 func StringPrompt(prompt string) string {
-	var res string
 	r := bufio.NewReader(os.Stdin)
+	fmt.Printf("%s: ", prompt)
 
-	for {
-		fmt.Fprintf(os.Stdout, "%s: ", prompt)
-		res, err := r.ReadString('\n')
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if res != "" {
-			break
-		}
+	res, err := r.ReadString('\n')
+	if err != nil {
+		log.Fatal(err)
 	}
-
-	return strings.TrimSpace(res)
+	res = strings.TrimSpace(res)
+	return strings.ToLower(res)
 }
