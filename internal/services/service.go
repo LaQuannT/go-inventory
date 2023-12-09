@@ -4,8 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/LaQuannT/inventory-mamagment-system/internal/utils"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 type Service struct {
@@ -162,14 +165,20 @@ func (s *Service) EditItem() {
 		i = item
 		id = itemId
 	}
-	i.Name = utils.StringPrompt(fmt.Sprintf("Name (%s)", i.Name))
-	i.Brand = utils.StringPrompt(fmt.Sprintf("Brand (%s)", i.Brand))
-	i.Sku = utils.StringPrompt(fmt.Sprintf("SKU (%s)", i.Sku))
-	i.Location = utils.StringPrompt(fmt.Sprintf("Location (%s)", i.Location))
-	i.Category = utils.StringPrompt(fmt.Sprintf("Category (%s)", i.Category))
+	name := utils.StringPrompt(fmt.Sprintf("Name (%s)", i.Name))
+	brand := utils.StringPrompt(fmt.Sprintf("Brand (%s)", i.Brand))
+	sku = utils.StringPrompt(fmt.Sprintf("SKU (%s)", i.Sku))
+	location := utils.StringPrompt(fmt.Sprintf("Location (%s)", i.Location))
+	category := utils.StringPrompt(fmt.Sprintf("Category (%s)", i.Category))
+
+	i.Name = checkVarForChange(name, i.Name)
+	i.Brand = checkVarForChange(brand, i.Brand)
+	i.Sku = checkVarForChange(sku, i.Sku)
+	i.Location = checkVarForChange(location, i.Location)
+	i.Category = checkVarForChange(category, i.Category)
 
 	_, err = s.Db.Exec(`
-    UPDATE inventory
+    UPDATE item
     SET name = $1, brand = $2, sku = $3, location = $4, category =$5
     WHERE id = $6`, i.Name, i.Brand, i.Sku, i.Location, i.Category, id)
 	if err != nil {
@@ -196,7 +205,22 @@ func fromRowToItem(row *sql.Rows) (*item, int, error) {
 	}, id, nil
 }
 
+func checkVarForChange(x, y string) string {
+	if x == "" {
+		return y
+	}
+	return x
+}
+
 func displayData(i *item) {
+	toTitle := cases.Title(language.English, cases.NoLower)
+
+	i.Name = toTitle.String(i.Name)
+	i.Brand = toTitle.String(i.Brand)
+	i.Sku = strings.ToUpper(i.Sku)
+	i.Location = strings.ToUpper(i.Location)
+	i.Category = toTitle.String(i.Category)
+
 	fmt.Printf("[%s] Item: %s | Brand: %s | Category: %s | location: %s\n", i.Sku, i.Name, i.Brand, i.Category, i.Location)
 }
 
