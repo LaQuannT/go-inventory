@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/LaQuannT/inventory-mamagment-system/internal/controller"
 	db "github.com/LaQuannT/inventory-mamagment-system/internal/database"
 	"github.com/LaQuannT/inventory-mamagment-system/internal/services"
 	"github.com/alexflint/go-arg"
@@ -53,30 +54,31 @@ func main() {
 	if err != nil {
 		log.Fatal("Couldn't connect to database...")
 	}
+	defer pool.Close()
 
-	stock := services.New(pool)
+	s := services.New(pool)
 
 	switch {
 	case args.Brand:
-		stock.SearchByBrand()
+		controller.BrandSearch(s)
 
 	case args.Category:
-		stock.SearchByCategory()
+		controller.CategorySearch(s)
 
 	case args.DelItem:
-		stock.DeleteItem()
+		controller.Delete(s)
 
 	case args.Edit:
-		stock.EditItem()
+		controller.Update(s)
 
 	case args.Item:
-		stock.AddItem()
+		controller.Add(s)
 
 	case args.Name:
-		stock.SearchByName()
+		controller.NameSearch(s)
 
 	case args.Search:
-		stock.SearchBySKU()
+		controller.SearchSku(s)
 
 	default:
 		fmt.Println("Please specify a flag to perform a service. For help use -h or --help.")
