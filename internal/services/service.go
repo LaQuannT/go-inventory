@@ -2,7 +2,9 @@ package services
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
+
+	"github.com/lib/pq"
 )
 
 type Service struct {
@@ -20,8 +22,16 @@ func (s *Service) AddItem(i *Item) error {
     values ($1, $2, $3, $4, $5)`,
 		i.Name, i.Brand, i.Sku, i.Location, i.Category)
 	if err != nil {
-		return err
+		switch e := err.(type) {
+		case *pq.Error:
+			if e.Code == "23505" {
+				// unique constraint violation branch
+				return fmt.Errorf("SKU code [%s] already in use", i.Sku)
+			}
+		}
+		return fmt.Errorf("services/AddItem: %w", err)
 	}
+
 	return nil
 }
 
@@ -30,7 +40,7 @@ func (s *Service) SearchByCategory(category string) ([]*Item, error) {
 
 	rows, err := s.Db.Query(`SELECT * FROM item WHERE category = $1`, category)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("services/SearchByCategory: %w", err)
 	}
 
 	defer rows.Close()
@@ -38,8 +48,7 @@ func (s *Service) SearchByCategory(category string) ([]*Item, error) {
 	for rows.Next() {
 		item, _, err := fromRowToItem(rows)
 		if err != nil {
-			log.Println(err)
-			continue
+			return nil, fmt.Errorf("services/SearchByCategory: %w", err)
 		}
 		res = append(res, item)
 	}
@@ -51,15 +60,14 @@ func (s *Service) SearchByName(name string) ([]*Item, error) {
 
 	rows, err := s.Db.Query(`SELECT * FROM item WHERE name = $1`, name)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("services/SearchByName: %w", err)
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		item, _, err := fromRowToItem(rows)
 		if err != nil {
-			log.Println(err)
-			continue
+			return nil, fmt.Errorf("services/SearchByName: %w", err)
 		}
 		res = append(res, item)
 	}
@@ -71,15 +79,14 @@ func (s *Service) SearchByBrand(brand string) ([]*Item, error) {
 
 	rows, err := s.Db.Query(`SELECT * FROM item WHERE brand = $1`, brand)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("services/SearchByBrand: %w", err)
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		item, _, err := fromRowToItem(rows)
 		if err != nil {
-			log.Println(err)
-			continue
+			return nil, fmt.Errorf("services/SearchByBrand: %w", err)
 		}
 		res = append(res, item)
 	}
@@ -94,15 +101,14 @@ func (s *Service) SearchBySKU(sku string) (*Item, int, error) {
 
 	rows, err := s.Db.Query(`SELECT * FROM item WHERE sku = $1`, sku)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, fmt.Errorf("services/SearchBySKU: %w", err)
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		res, id, err = fromRowToItem(rows)
 		if err != nil {
-			log.Println(err)
-			continue
+			return nil, 0, fmt.Errorf("services/SearchBySKU: %w", err)
 		}
 	}
 	return res, id, nil
@@ -111,7 +117,7 @@ func (s *Service) SearchBySKU(sku string) (*Item, int, error) {
 func (s *Service) DeleteItem(sku string) error {
 	_, err := s.Db.Exec(`DELETE FROM item WHERE sku = $1`, sku)
 	if err != nil {
-		return err
+		return fmt.Errorf("services/DeleteItem: %w", err)
 	}
 	return nil
 }
@@ -122,7 +128,7 @@ func (s *Service) EditItem(i *Item, id int) error {
     SET name = $1, brand = $2, sku = $3, location = $4, category =$5
     WHERE id = $6`, i.Name, i.Brand, i.Sku, i.Location, i.Category, id)
 	if err != nil {
-		return err
+		return fmt.Errorf("services/EditItem: %w", err)
 	}
 
 	return nil
@@ -133,7 +139,7 @@ func fromRowToItem(row *sql.Rows) (*Item, int, error) {
 	var id int
 
 	if err := row.Scan(&id, &sku, &name, &brand, &category, &location); err != nil {
-		return nil, 0, err
+		return nil, 0, fmt.Errorf("fromRowToItem: %w", err)
 	}
 	return &Item{
 		name,

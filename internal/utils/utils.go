@@ -8,12 +8,13 @@ import (
 	"strings"
 )
 
-func StringPrompt(prompt string) string {
+func stringPrompt(prompt string) string {
 	r := bufio.NewReader(os.Stdin)
 	fmt.Printf("%s: ", prompt)
 
 	res, err := r.ReadString('\n')
 	if err != nil {
+		err = fmt.Errorf("stringPrompt: %w", err)
 		log.Fatal(err)
 	}
 	res = strings.TrimSpace(res)
@@ -22,7 +23,7 @@ func StringPrompt(prompt string) string {
 
 func ValidateInput(prompt string, trys int) string {
 	attemptsAllowed := 2
-	input := StringPrompt(prompt)
+	input := stringPrompt(prompt)
 
 	if input == "" && trys < attemptsAllowed {
 		ValidateInput(prompt, trys+1)
@@ -36,7 +37,7 @@ func ValidateInput(prompt string, trys int) string {
 
 func ValidateInputChange(prompt, originalData string) string {
 	prompt = fmt.Sprintf("%s (%s)", prompt, originalData)
-	data := StringPrompt(prompt)
+	data := stringPrompt(prompt)
 	if data == "" {
 		return originalData
 	} else {

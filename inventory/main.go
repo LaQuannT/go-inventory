@@ -52,7 +52,7 @@ func main() {
 
 	pool, err := db.Connect(dbConnStr)
 	if err != nil {
-		log.Fatal("Couldn't connect to database...")
+		log.Fatal(err)
 	}
 	defer pool.Close()
 
