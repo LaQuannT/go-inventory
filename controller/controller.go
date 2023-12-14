@@ -5,8 +5,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/LaQuannT/go-inventory/internal/services"
-	"github.com/LaQuannT/go-inventory/internal/utils"
+	"github.com/LaQuannT/go-inventory/services"
+	"github.com/LaQuannT/go-inventory/utils"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
