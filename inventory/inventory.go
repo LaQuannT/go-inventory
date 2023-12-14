@@ -1,13 +1,13 @@
-package main
+package inventory
 
 import (
 	"fmt"
 	"log"
 	"os"
 
-	"github.com/LaQuannT/inventory-mamagment-system/internal/controller"
-	db "github.com/LaQuannT/inventory-mamagment-system/internal/database"
-	"github.com/LaQuannT/inventory-mamagment-system/internal/services"
+	"github.com/LaQuannT/go-inventory/internal/controller"
+	db "github.com/LaQuannT/go-inventory/internal/database"
+	"github.com/LaQuannT/go-inventory/internal/services"
 	"github.com/alexflint/go-arg"
 	"github.com/joho/godotenv"
 )
