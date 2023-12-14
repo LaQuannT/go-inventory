@@ -20,5 +20,6 @@ func Execute() {
 }
 
 func init() {
+	rootCmd.AddCommand(storeCmd, updateCmd, removeCmd)
 	rootCmd.Flags().BoolP("toogle", "t", false, "Help message for toogle")
 }
