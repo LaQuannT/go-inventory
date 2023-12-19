@@ -2,45 +2,55 @@ package utils
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
-	"log"
-	"os"
+	"io"
 	"strings"
 )
 
-func stringPrompt(prompt string) string {
-	r := bufio.NewReader(os.Stdin)
+var ErrExceedsAttempts = errors.New("invalid input data - exceeded number of allowed attempts")
+
+func dataPrompt(reader io.Reader, prompt string) (string, error) {
+	r := bufio.NewReader(reader)
 	fmt.Printf("%s: ", prompt)
 
-	res, err := r.ReadString('\n')
+	input, err := r.ReadString('\n')
 	if err != nil {
-		err = fmt.Errorf("stringPrompt: %w", err)
-		log.Fatal(err)
+		err = fmt.Errorf("dataPrompt: %w", err)
+		return "", err
 	}
-	res = strings.TrimSpace(res)
-	return strings.ToLower(res)
+
+	input = strings.TrimSpace(input)
+	input = strings.ToLower(input)
+	return input, nil
 }
 
-func ValidateInput(prompt string, trys int) string {
+func ValidateInputData(reader io.Reader, prompt string, attempt int) (string, error) {
 	attemptsAllowed := 2
-	input := stringPrompt(prompt)
 
-	if input == "" && trys < attemptsAllowed {
-		ValidateInput(prompt, trys+1)
-	} else if input == "" && trys >= attemptsAllowed {
-		fmt.Printf("'%s' contains no vaild data", prompt)
-		os.Exit(0)
+	input, err := dataPrompt(reader, prompt)
+	if err != nil {
+		return "", fmt.Errorf("ValidateInputData: %w", err)
 	}
 
-	return input
+	if input == "" && attempt < attemptsAllowed {
+		ValidateInputData(reader, prompt, attempt+1)
+	} else if input == "" && attempt >= attemptsAllowed {
+		return "", ErrExceedsAttempts
+	}
+	return input, nil
 }
 
-func ValidateInputChange(prompt, originalData string) string {
+func ValidateInputDataChange(reader io.Reader, prompt, originalData string) (string, error) {
 	prompt = fmt.Sprintf("%s (%s)", prompt, originalData)
-	data := stringPrompt(prompt)
+	data, err := dataPrompt(reader, prompt)
+	if err != nil {
+		return "", fmt.Errorf("ValidateInputDataChange: %w", err)
+	}
+
 	if data == "" {
-		return originalData
+		return originalData, nil
 	} else {
-		return data
+		return data, nil
 	}
 }

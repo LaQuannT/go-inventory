@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/LaQuannT/go-inventory/services"
@@ -14,13 +15,38 @@ import (
 const initAttempt = 1
 
 func Add(s *services.Service) {
-	var i services.Item
+	name, err := utils.ValidateInputData(os.Stdin, "Name", initAttempt)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	i.Name = utils.ValidateInput("Name", initAttempt)
-	i.Brand = utils.ValidateInput("Brand", initAttempt)
-	i.Sku = utils.ValidateInput("Stock keeping unit(sku)", initAttempt)
-	i.Location = utils.ValidateInput("Location", initAttempt)
-	i.Category = utils.ValidateInput("Category", initAttempt)
+	brand, err := utils.ValidateInputData(os.Stdin, "Brand", initAttempt)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	sku, err := utils.ValidateInputData(os.Stdin, "Stock keeping unit(sku)", initAttempt)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	category, err := utils.ValidateInputData(os.Stdin, "Category", initAttempt)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	location, err := utils.ValidateInputData(os.Stdin, "Location", initAttempt)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	i := services.Item{
+		Name:     name,
+		Brand:    brand,
+		Sku:      sku,
+		Category: category,
+		Location: location,
+	}
 
 	if err := s.AddItem(&i); err != nil {
 		log.Fatal(err)
@@ -30,7 +56,10 @@ func Add(s *services.Service) {
 }
 
 func CategorySearch(s *services.Service) {
-	c := utils.ValidateInput("Search Category", initAttempt)
+	c, err := utils.ValidateInputData(os.Stdin, "Search Category", initAttempt)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	items, err := s.SearchByCategory(c)
 	if err != nil {
@@ -41,7 +70,10 @@ func CategorySearch(s *services.Service) {
 }
 
 func NameSearch(s *services.Service) {
-	n := utils.ValidateInput("Search Name", initAttempt)
+	n, err := utils.ValidateInputData(os.Stdin, "Search Name", initAttempt)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	items, err := s.SearchByName(n)
 	if err != nil {
@@ -52,7 +84,10 @@ func NameSearch(s *services.Service) {
 }
 
 func BrandSearch(s *services.Service) {
-	b := utils.ValidateInput("Search Brand", initAttempt)
+	b, err := utils.ValidateInputData(os.Stdin, "Search Brand", initAttempt)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	items, err := s.SearchByBrand(b)
 	if err != nil {
@@ -63,7 +98,10 @@ func BrandSearch(s *services.Service) {
 }
 
 func SearchSku(s *services.Service) {
-	code := utils.ValidateInput("Search SKU code", initAttempt)
+	code, err := utils.ValidateInputData(os.Stdin, "Search SKU code", initAttempt)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	item, _, err := s.SearchBySKU(code)
 	if err != nil {
@@ -74,7 +112,10 @@ func SearchSku(s *services.Service) {
 }
 
 func Delete(s *services.Service) {
-	code := utils.ValidateInput("SKU of item to delete", initAttempt)
+	code, err := utils.ValidateInputData(os.Stdin, "SKU of item to delete", initAttempt)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	if err := s.DeleteItem(code); err != nil {
 		log.Fatal(err)
@@ -84,19 +125,48 @@ func Delete(s *services.Service) {
 }
 
 func Update(s *services.Service) {
-	var updatedItem services.Item
-	code := utils.ValidateInput("SKU of item to update", initAttempt)
+	code, err := utils.ValidateInputData(os.Stdin, "SKU of item to update", initAttempt)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	item, id, err := s.SearchBySKU(code)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	updatedItem.Name = utils.ValidateInputChange("Name", item.Name)
-	updatedItem.Brand = utils.ValidateInputChange("Brand", item.Brand)
-	updatedItem.Sku = utils.ValidateInputChange("SKU", item.Sku)
-	updatedItem.Category = utils.ValidateInputChange("Category", item.Category)
-	updatedItem.Location = utils.ValidateInputChange("Location", item.Location)
+	name, err := utils.ValidateInputDataChange(os.Stdin, "Name", item.Name)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	brand, err := utils.ValidateInputDataChange(os.Stdin, "Brand", item.Brand)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	sku, err := utils.ValidateInputDataChange(os.Stdin, "SKU", item.Sku)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	category, err := utils.ValidateInputDataChange(os.Stdin, "Category", item.Category)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	location, err := utils.ValidateInputDataChange(os.Stdin, "Location", item.Location)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	updatedItem := services.Item{
+		Name:     name,
+		Brand:    brand,
+		Sku:      sku,
+		Category: category,
+		Location: location,
+	}
 
 	if err := s.EditItem(&updatedItem, id); err != nil {
 		log.Fatal(err)
