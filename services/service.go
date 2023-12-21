@@ -128,6 +128,13 @@ func (s *Service) EditItem(i *Item, id int) error {
     SET name = $1, brand = $2, sku = $3, location = $4, category =$5
     WHERE id = $6`, i.Name, i.Brand, i.Sku, i.Location, i.Category, id)
 	if err != nil {
+		switch e := err.(type) {
+		case *pq.Error:
+			if e.Code == "23505" {
+				// unique constraint violation branch
+				return fmt.Errorf("SKU code [%s] already in use", i.Sku)
+			}
+		}
 		return fmt.Errorf("services/EditItem: %w", err)
 	}
 
