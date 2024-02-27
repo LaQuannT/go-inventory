@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  database:
+    image: postgres
+    environment:
+      POSTGRES_USERNAME: ${PG_USERNAME}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DATABASE}
+      PGDATA: /var/lib/postgres/data/go-inventory
+    ports:
+      - ${PG_PORT}:5432
+    volumes:
+      - go-inventory:/var/lib/postgres/data/go-inventory
+volumes:
+  go-inventory:
