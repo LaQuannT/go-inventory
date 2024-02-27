@@ -19,8 +19,8 @@ func (r *itemRepository) Add(i *model.Item) error {
 	defer cancel()
 
 	stmt := `
-  INSERT INTO item (name, brand, stock_keeping_unit, category, location)
-  VALUES ($1, $2, $3, $4, $5);
+  INSERT INTO item (name, brand, stock_keeping_unit, category, location, amount)
+  VALUES ($1, $2, $3, $4, $5, $6);
   `
 	_, err := r.db.Exec(ctx, stmt, i.Name, i.Brand, i.Sku, i.Category, i.Location)
 	if err != nil {
@@ -146,10 +146,10 @@ func (r *itemRepository) Update(i *model.Item) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	stmt := `UPDATE item SET name=$1, brand=$2, stock_keeping_unit=$3, category=$4, location=$5
-  WHERE id=$6;
+	stmt := `UPDATE item SET name=$1, brand=$2, stock_keeping_unit=$3, category=$4, location=$5,
+  amount=$6 WHERE id=$7;
   `
-	_, err := r.db.Exec(ctx, stmt, i.Name, i.Brand, i.Sku, i.Category, i.Location, i.ID)
+	_, err := r.db.Exec(ctx, stmt, i.Name, i.Brand, i.Sku, i.Category, i.Location, i.Amount, i.ID)
 	if err != nil {
 		return fmt.Errorf("unable to update item: %w", err)
 	}
@@ -160,7 +160,7 @@ func (r *itemRepository) Update(i *model.Item) error {
 func rowToItem(r pgx.Rows) (*model.Item, error) {
 	i := new(model.Item)
 
-	if err := r.Scan(i.ID, i.Name, i.Brand, i.Sku, i.Category, i.Location); err != nil {
+	if err := r.Scan(i.ID, i.Name, i.Brand, i.Sku, i.Category, i.Location, i.Amount); err != nil {
 		return nil, errors.New("pgx pq row to struct conversion error")
 	}
 	return i, nil

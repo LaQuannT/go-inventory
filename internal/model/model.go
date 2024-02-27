@@ -8,6 +8,7 @@ type Item struct {
 	Category string
 	Location string
 	ID       int
+	Amount   int
 }
 
 type ItemRepository interface {
