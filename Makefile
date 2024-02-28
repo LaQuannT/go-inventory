@@ -1,8 +1,8 @@
 run:
-	@go build -o bin/go-inventory cmd/cli/main.go && bin/go-inventory
+	@go build -o bin/go-inventory cmd/go-inventory/main.go && bin/go-inventory
 
 build:
-	@go build -o bin/go-inventory cmd/cli/main.go
+	@go build -o bin/go-inventory cmd/go-inventory/main.go
 
 test:
 	@go test ./...
