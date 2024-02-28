@@ -48,7 +48,7 @@ func (s *service) Create() {
 		log.Fatal(err)
 	}
 
-	displayData(i)
+	displayData(i, os.Stdout)
 }
 
 func (s service) Add() {
@@ -77,7 +77,7 @@ func (s service) Add() {
 	if err = s.repository.Update(i); err != nil {
 		log.Fatalf("unable to add to item amount: %v", err)
 	}
-	displayData(i)
+	displayData(i, os.Stdout)
 }
 
 func (s *service) Subtract() {
@@ -107,7 +107,7 @@ func (s *service) Subtract() {
 		log.Fatalf("unable to remove item amount: %v", err)
 	}
 
-	displayData(i)
+	displayData(i, os.Stdout)
 }
 
 func (s *service) NameSearch() {
@@ -122,7 +122,7 @@ func (s *service) NameSearch() {
 	}
 
 	for _, i := range items {
-		displayData(i)
+		displayData(i, os.Stdout)
 	}
 }
 
@@ -138,7 +138,7 @@ func (s *service) CategorySearch() {
 	}
 
 	for _, i := range items {
-		displayData(i)
+		displayData(i, os.Stdout)
 	}
 }
 
@@ -154,7 +154,7 @@ func (s *service) BrandSearch() {
 	}
 
 	for _, i := range items {
-		displayData(i)
+		displayData(i, os.Stdout)
 	}
 }
 
@@ -169,7 +169,7 @@ func (s *service) SKUSearch() {
 		log.Fatal(err)
 	}
 
-	displayData(i)
+	displayData(i, os.Stdout)
 }
 
 func (s *service) Delete() {
@@ -232,5 +232,5 @@ func (s *service) Update() {
 		log.Fatal(err)
 	}
 
-	displayData(i)
+	displayData(i, os.Stdout)
 }

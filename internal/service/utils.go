@@ -45,14 +45,14 @@ func validateInput(r io.Reader, prompt string) (string, error) {
 	return input, nil
 }
 
-func displayData(i *model.Item) {
+func displayData(i *model.Item, w io.Writer) {
 	toTitle := cases.Title(language.English, cases.NoLower)
 
 	i.Name = toTitle.String(i.Name)
 	i.Brand = toTitle.String(i.Brand)
 	i.Sku = strings.ToUpper(i.Sku)
-	i.Location = strings.ToUpper(i.Location)
+	i.Location = toTitle.String(i.Location)
 	i.Category = toTitle.String(i.Category)
 
-	fmt.Printf("[%s] Name: %s | Brand: %s | Category: %s | location: %s | Stock: %d\n", i.Sku, i.Name, i.Brand, i.Category, i.Location, i.Amount)
+	fmt.Fprintf(w, "[%s] Name: %s | Brand: %s | Category: %s | location: %s | Stock: %d\n", i.Sku, i.Name, i.Brand, i.Category, i.Location, i.Amount)
 }
