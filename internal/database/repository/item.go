@@ -93,7 +93,7 @@ func (r *itemRepository) SearchBrand(b string) ([]*model.Item, error) {
 
 	rows, err := r.db.Query(ctx, stmt, b)
 	if err != nil {
-		return nil, fmt.Errorf("unable to find items from brand %q: %w", b, err)
+		return nil, fmt.Errorf("unable to find items in brand %q: %w", b, err)
 	}
 	defer rows.Close()
 
@@ -158,7 +158,7 @@ func (r *itemRepository) Update(i *model.Item) error {
 func rowToItem(r pgx.Rows) (*model.Item, error) {
 	i := new(model.Item)
 
-	if err := r.Scan(i.ID, i.Name, i.Brand, i.Sku, i.Category, i.Location, i.Amount); err != nil {
+	if err := r.Scan(&i.ID, &i.Name, &i.Brand, &i.Sku, &i.Category, &i.Location, &i.Amount); err != nil {
 		return nil, errors.New("pgx pq row to struct conversion error")
 	}
 	return i, nil
