@@ -52,7 +52,7 @@ func migrateUp(connStr string) error {
 		return err
 	}
 
-	if err := m.Up(); err != nil {
+	if err := m.Up(); err != nil && err.Error() != "no change" {
 		return err
 	}
 
