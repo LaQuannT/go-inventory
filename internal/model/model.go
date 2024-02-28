@@ -12,10 +12,10 @@ type Item struct {
 }
 
 type ItemRepository interface {
-	Add(Item) error
+	Create(*Item) error
 	SearchCategory(string) ([]*Item, error)
 	SearchName(string) ([]*Item, error)
-	SearchSKU(string) ([]*Item, error)
+	SearchSKU(string) (*Item, error)
 	SearchBrand(string) ([]*Item, error)
 	Delete(string) error
 	Update(*Item) error

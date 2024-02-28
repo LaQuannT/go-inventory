@@ -14,7 +14,7 @@ type itemRepository struct {
 	db *pgx.Conn
 }
 
-func (r *itemRepository) Add(i *model.Item) error {
+func (r *itemRepository) Create(i *model.Item) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -104,9 +104,7 @@ func (r *itemRepository) SearchBrand(b string) ([]*model.Item, error) {
 	return items, nil
 }
 
-func (r *itemRepository) SearchSKU(sku string) ([]*model.Item, error) {
-	items := make([]*model.Item, 0)
-
+func (r *itemRepository) SearchSKU(sku string) (*model.Item, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -119,14 +117,10 @@ func (r *itemRepository) SearchSKU(sku string) ([]*model.Item, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		i, err := rowToItem(rows)
-		if err != nil {
-			return nil, fmt.Errorf("unable to list item data: %w", err)
-		}
-		items = append(items, i)
+		return rowToItem(rows)
 	}
 
-	return items, nil
+	return nil, nil
 }
 
 func (r *itemRepository) Delete(sku string) error {
