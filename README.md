@@ -14,14 +14,8 @@ Go Inventory is a tool that allows users to perform simple stock keeping with in
 To use Go-Inventory a few steps must be taken to set up the command for use.
 
 ### Steps
-- Fork & clone repository
 - Create a .env file with your postgres database variables
-- Build & install binary file
-
-Once you have forked repository clone repository:
-```
-git clone [path]
-```
+- install binary file
 
 Create a .env file and add the variables below with your postgres database information:
 
@@ -36,11 +30,10 @@ touch .env
 - *PG_DATABASE*
 - *PG_SSLMODE*
 
-Build & install binary file:
+install binary file:
 
 ```
-make build
-go install
+go install github.com/LaQuannT/go-inventory/cmd/go-inventory@latest
 ```
 
 <a id="item"><a>
