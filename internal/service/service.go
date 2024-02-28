@@ -15,6 +15,10 @@ type service struct {
 	repository model.ItemRepository
 }
 
+func New(r model.ItemRepository) *service {
+	return &service{repository: r}
+}
+
 func (s *service) Create() {
 	var name, brand, sku, category, location string
 

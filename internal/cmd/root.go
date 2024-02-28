@@ -18,3 +18,8 @@ func Execute() {
 		os.Exit(1)
 	}
 }
+
+func init() {
+	rootCmd.AddCommand(storeCmd)
+	rootCmd.Flags().BoolP("toogle", "t", false, "Help message for toogle")
+}

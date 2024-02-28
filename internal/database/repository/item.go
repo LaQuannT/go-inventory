@@ -14,6 +14,10 @@ type itemRepository struct {
 	db *pgx.Conn
 }
 
+func New(db *pgx.Conn) *itemRepository {
+	return &itemRepository{db: db}
+}
+
 func (r *itemRepository) Create(i *model.Item) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
