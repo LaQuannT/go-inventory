@@ -26,7 +26,7 @@ func (r *itemRepository) Create(i *model.Item) error {
   INSERT INTO item (name, brand, stock_keeping_unit, category, location, amount)
   VALUES ($1, $2, $3, $4, $5, $6);
   `
-	_, err := r.db.Exec(ctx, stmt, i.Name, i.Brand, i.Sku, i.Category, i.Location)
+	_, err := r.db.Exec(ctx, stmt, i.Name, i.Brand, i.Sku, i.Category, i.Location, i.Amount)
 	if err != nil {
 		return fmt.Errorf("unable to add item: %w", err)
 	}

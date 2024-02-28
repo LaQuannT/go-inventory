@@ -9,7 +9,14 @@ import (
 	"github.com/LaQuannT/go-inventory/internal/model"
 )
 
-var prompts = [6]string{"Name", "Brand", "Stock Keeping Unit(SKU)", "Category", "Location", "Amount"}
+var prompts = map[int]string{
+	0: "Name",
+	1: "Brand",
+	2: "Stock Keeping Unit(SKU)",
+	3: "Category",
+	4: "Location",
+	5: "Amount",
+}
 
 type service struct {
 	repository model.ItemRepository
@@ -22,14 +29,25 @@ func New(r model.ItemRepository) *service {
 func (s *service) Create() {
 	var name, brand, sku, category, location string
 
-	inputs := []string{name, brand, sku, category, location}
-
-	for i := 0; i < len(prompts)-2; i++ {
-		input, err := validateInput(os.Stdin, prompts[i])
+	for i := 0; i < 5; i++ {
+		prompt := prompts[i]
+		input, err := validateInput(os.Stdin, prompt)
 		if err != nil {
 			log.Fatal(err)
 		}
-		inputs[i] = input
+
+		switch prompt {
+		case prompts[0]:
+			name = input
+		case prompts[1]:
+			brand = input
+		case prompts[2]:
+			sku = input
+		case prompts[3]:
+			category = input
+		case prompts[4]:
+			location = input
+		}
 	}
 
 	n, err := validateInput(os.Stdin, prompts[5])
